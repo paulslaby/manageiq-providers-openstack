@@ -24,6 +24,7 @@ class OpenstackRabbitEventMonitor < OpenstackEventMonitor
     connection_options = {:host => options[:hostname]}
     connection_options[:port]               = options[:port] || DEFAULT_AMQP_PORT
     connection_options[:heartbeat]          = options[:heartbeat] || DEFAULT_AMQP_HEARTBEAT
+    connection_options[:vhost] 		          = "/openstack"
     connection_options[:automatic_recovery] = options[:automatic_recovery] if options.key? :automatic_recovery
     connection_options[:recovery_attempts]  = options[:recovery_attempts] if options.key? :recovery_attempts
 

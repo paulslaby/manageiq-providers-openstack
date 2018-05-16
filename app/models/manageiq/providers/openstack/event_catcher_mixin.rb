@@ -49,11 +49,13 @@ module ManageIQ::Providers::Openstack::EventCatcherMixin
   end
 
   def queue_event(event)
-    _log.info "#{log_prefix} Caught event [#{event.payload["event_type"]}]"
+    event_payload = JSON.parse(event.payload["oslo.message"])
+    _log.info "#{log_prefix} Caught event ORIGINAL [#{event.payload["event_type"]}]"
+    _log.info "#{log_prefix} Caught event MODIFIED [#{event_payload["event_type"]}]"
 
     event_hash = {}
     # copy content
-    content = event.payload
+    content = event_payload
     event_hash[:content] = content.reject { |k, _v| k.start_with? "_context_" }
 
     # copy context
@@ -70,6 +72,9 @@ module ManageIQ::Providers::Openstack::EventCatcherMixin
   end
 
   def filtered?(event)
-    filtered_events.include?(event.payload["event_type"])
+    event_payload = JSON.parse(event.payload["oslo.message"])
+    _log.info "#{log_prefix} Filtered? event ORIGINAL [#{event.payload["event_type"]}]"
+    _log.info "#{log_prefix} Filtered? event MODIFIED [#{event_payload["event_type"]}]"
+    filtered_events.include?(event_payload["event_type"])
   end
 end
